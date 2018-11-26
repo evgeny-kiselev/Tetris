@@ -1,6 +1,7 @@
 ﻿using Tetris.Controllers;
 using Tetris.Logic;
 using Tetris.Fields;
+using UnityEngine.UI;
 using UnityEngine;
 
 namespace Tetris
@@ -16,9 +17,24 @@ namespace Tetris
         protected Field field;
         private float deltaTime;
         private float iteratorTime;
+        public bool isGameEnded = false;
         [Range(0.1f, 5f)]
         public float speed = 1;
         public int score;
+        public Text scoreText;
+
+        public int Score
+        {
+            get
+            {
+                return score;
+            }
+            set
+            {
+                score = value;
+                scoreText.text = "Score: " + score;
+            }
+        }
 
         public void Awake()
         {
@@ -29,18 +45,21 @@ namespace Tetris
 
         public void Start()
         {
-            gameLogic.startGame();
+            gameLogic.StartGame();
         }
 
         public void Update()
         {
-            iteratorTime = 1f / speed;
-            deltaTime += Time.deltaTime;
-            controller.readPlayerInput();
-            if (deltaTime > iteratorTime)
+            if (!isGameEnded)
             {
-                gameLogic.iteration();
-                deltaTime = 0;
+                iteratorTime = 1f / speed;
+                deltaTime += Time.deltaTime;
+                controller.readPlayerInput();
+                if (deltaTime > iteratorTime)
+                {
+                    gameLogic.Iteration();
+                    deltaTime = 0;
+                }
             }
         }
     }

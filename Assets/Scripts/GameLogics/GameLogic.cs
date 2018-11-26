@@ -20,34 +20,89 @@ namespace Tetris.Logic
             field = GetComponent<Field>();
         }
 
-        public abstract void startGame();
+        /// <summary>
+        /// Инициализация начала игры
+        /// </summary>
+        public abstract void StartGame();
 
-        public abstract void iteration();
+        /// <summary>
+        /// Действия в течении каждого хода игры.
+        /// </summary>
+        public abstract void Iteration();
+        
+        /// <summary>
+        /// Поиск и удаление собранных линий. 
+        /// </summary>
+        protected abstract void CheckLine();
 
-        protected abstract void checkLine();
-
-        protected virtual void addScore(int score)
+        /// <summary>
+        /// Добавляет количество очков игроку
+        /// </summary>
+        /// <param name="score">Кол-во очков</param>
+        protected virtual void AddScore(int score)
         {
-            game.score += score;
+            game.Score += score;
         }
 
-        protected abstract bool isValidBlockPosition(Transform block, Vector3 moveVector);
+        /// <summary>
+        /// Проверка на окончание игры. Если игра окончена, цкл останавливается.
+        /// </summary>
+        /// <returns>true - если игра закончилась, иначе false</returns>
+        protected bool CheckGameEnded()
+        {
+            foreach (Transform block in currentFigure)
+                if (block.position.y >= transform.position.x + field.height)
+                {
+                    game.isGameEnded = true;
+                    return true;
+                }
 
-        public bool canMoveFigure(Transform figure, Vector3 moveVector)
+            return false;
+        }
+
+        /// <summary>
+        /// Проверка, можно ли переместить блок.
+        /// </summary>
+        /// <param name="block">Перемещаемый блок</param>
+        /// <param name="moveVector">Вектор перемещения</param>
+        /// <returns>true - если можно, иначе false</returns>
+        protected abstract bool IsValidBlockPosition(Transform block, Vector3 moveVector);
+
+        /// <summary>
+        /// Проверка, можно ли переместить фигуру.
+        /// </summary>
+        /// <param name="figure">Перемещаемая фигура</param>
+        /// <param name="moveVector">Вектор перемещения</param>
+        /// <returns>true - если можно, иначе false</returns>
+        /// <seealso cref="IsValidBlockPosition(Transform, Vector3)"/> 
+        public bool CanMoveFigure(Transform figure, Vector3 moveVector)
         {
             foreach (Transform block in figure)
-                if (!isValidBlockPosition(block, moveVector)) return false;
+                if (!IsValidBlockPosition(block, moveVector)) return false;
             return true;
         }
 
-        public abstract bool moveCurentFigure(Vector3 moveVector);
+        /// <summary>
+        /// Перемещение текущей фигура на вектор.
+        /// </summary>
+        /// <param name="moveVector">Вектор перемещения</param>
+        /// <returns>true - если фигура перемещена, иначе false</returns>
+        public abstract bool MoveCurentFigure(Vector3 moveVector);
 
-        public virtual void rotateCurrentFigure()
+        /// <summary>
+        /// Поворот текущей фигуры
+        /// </summary>
+        /// <seealso cref="RotateFigure(Transform)"/>
+        public virtual void RotateCurrentFigure()
         {
-            rotateFigure(currentFigure);
+            RotateFigure(currentFigure);
         }
 
-        public virtual void rotateFigure(Transform figure)
+        /// <summary>
+        /// Поворот фигуры
+        /// </summary>
+        /// <param name="figure">Поворачиваемая фигура</param>
+        public virtual void RotateFigure(Transform figure)
         {
             var center = figure.position + figure.GetComponent<Figure>().getCenter();
             foreach (Transform block in figure)
@@ -56,7 +111,7 @@ namespace Tetris.Logic
                 block.localEulerAngles = Vector3.zero;
                 block.position = block.position.Round();
             }
-            if (!canMoveFigure(figure, Vector3.zero)) rotateCurrentFigure();
+            if (!CanMoveFigure(figure, Vector3.zero)) RotateCurrentFigure();
         }
     }
 }

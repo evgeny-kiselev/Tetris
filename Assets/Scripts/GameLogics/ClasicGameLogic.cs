@@ -6,22 +6,25 @@ namespace Tetris.Logic
     [RequireComponent(typeof(FigureFactory))]
     public class ClasicGameLogic : GameLogic
     {
-        public override void iteration()
+        public override void Iteration()
         {
-            if (!moveCurentFigure(new Vector3(0, -1, 0)))
+            if (!MoveCurentFigure(new Vector3(0, -1, 0)))
             {
-                field.addFigure(currentFigure);
-                currentFigure = factory.createFigure(field.spawnPoint).transform;
-                checkLine();
+                if (!CheckGameEnded())
+                {
+                    field.addFigure(currentFigure);
+                    currentFigure = factory.createFigure(field.spawnPoint).transform;
+                    CheckLine();
+                }
             }
         }
 
-        public override void startGame()
+        public override void StartGame()
         {
             currentFigure = factory.createFigure(field.spawnPoint).transform;
         }
 
-        protected override void checkLine()
+        protected override void CheckLine()
         {
             for (var y = 0; y < field.height; y++)
             {
@@ -30,14 +33,14 @@ namespace Tetris.Logic
                     if (field.getCeilObject(x, y) == null) lineCollected = false;
                 if (lineCollected)
                 {
-                    addScore(1);
+                    AddScore(1);
                     field.removeLine(y);
                     y--;
                 }
             }
         }
 
-        protected override bool isValidBlockPosition(Transform block, Vector3 moveVector)
+        protected override bool IsValidBlockPosition(Transform block, Vector3 moveVector)
         {
             var newPosition = (block.position + moveVector - transform.position).Round();
             var x = newPosition.x;
@@ -48,9 +51,9 @@ namespace Tetris.Logic
             return true;
         }
 
-        public override bool moveCurentFigure(Vector3 moveVector)
+        public override bool MoveCurentFigure(Vector3 moveVector)
         {
-            if (canMoveFigure(currentFigure, moveVector))
+            if (CanMoveFigure(currentFigure, moveVector))
             {
                 currentFigure.position += moveVector;
                 return true;

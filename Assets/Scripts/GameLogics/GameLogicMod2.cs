@@ -6,20 +6,27 @@ namespace Tetris.Logic
     {
         protected Transform hideLeftFig, hidenRightFig;
 
-        public override void iteration()
+        public override void Iteration()
         {
-            if (!moveCurentFigure(new Vector3(0, -1, 0)))
+            if (!MoveCurentFigure(new Vector3(0, -1, 0)))
             {
-                Transform figure = collectVisibleBlocksInFigure();
-                field.addFigure(figure);
-                checkLine();
+                if (!CheckGameEnded())
+                {
+                    Transform figure = CollectVisibleBlocksInFigure();
+                    field.addFigure(figure);
+                    CheckLine();
 
-                currentFigure = factory.createFigure(field.spawnPoint).transform;
-                createHidenFigures();
+                    currentFigure = factory.createFigure(field.spawnPoint).transform;
+                    CreateHidenFigures();
+                }
             }
         }
 
-        protected Transform collectVisibleBlocksInFigure()
+        /// <summary>
+        /// Собирает новую фигуру из видимых блоков, текущей фигуры, а так же ее спрятанных клонов
+        /// </summary>
+        /// <returns>Новая фигура, состоящая из видимых блоков</returns>
+        protected Transform CollectVisibleBlocksInFigure()
         {
             var figure = Instantiate(currentFigure.gameObject, transform).transform;
             while(figure.childCount > 0) DestroyImmediate(figure.GetChild(0).gameObject);
@@ -48,14 +55,20 @@ namespace Tetris.Logic
             return figure;
         }
 
-        public override void rotateCurrentFigure()
+        ///<summary>
+        /// <see cref="GameLogic.RotateCurrentFigure"/>
+        ///</summary>
+        public override void RotateCurrentFigure()
         {
-            base.rotateCurrentFigure();
-            rotateFigure(hideLeftFig);
-            rotateFigure(hidenRightFig);
+            base.RotateCurrentFigure();
+            RotateFigure(hideLeftFig);
+            RotateFigure(hidenRightFig);
         }
 
-        protected virtual void createHidenFigures()
+        /// <summary>
+        /// Создает теневые фигуры
+        /// </summary>
+        protected virtual void CreateHidenFigures()
         {
             if (hideLeftFig != null) DestroyImmediate(hideLeftFig.gameObject);
             if (hidenRightFig != null) DestroyImmediate(hidenRightFig.gameObject);
@@ -67,25 +80,26 @@ namespace Tetris.Logic
             hidenRightFig.transform.position += new Vector3(field.width, 0, 0);
         }
 
-        public override bool moveCurentFigure(Vector3 moveVector)
+        /// <see cref="GameLogic.MoveCurentFigure(Vector3)"/>
+        public override bool MoveCurentFigure(Vector3 moveVector)
         {
-            bool isMooved = base.moveCurentFigure(moveVector);
+            bool isMooved = base.MoveCurentFigure(moveVector);
             if (isMooved)
             {
                 hideLeftFig.position += moveVector;
                 hidenRightFig.position += moveVector;
 
-                if (!isFigureVisible(currentFigure))
-                    revisionCurrentFigure();
-                updateBlocksVisible(currentFigure);
-                updateBlocksVisible(hideLeftFig);
-                updateBlocksVisible(hidenRightFig);
+                if (!IsFigureVisible(currentFigure))
+                    RevisionCurrentFigure();
+                UpdateBlocksVisible(currentFigure);
+                UpdateBlocksVisible(hideLeftFig);
+                UpdateBlocksVisible(hidenRightFig);
 
             }
             return isMooved;
         }
 
-        protected void updateBlocksVisible(Transform figure)
+        protected void UpdateBlocksVisible(Transform figure)
         {
             var minX = transform.position.x;
             var maxX = minX + field.width;
@@ -97,10 +111,10 @@ namespace Tetris.Logic
             }
         }
 
-        protected void revisionCurrentFigure()
+        protected void RevisionCurrentFigure()
         {
             var figure = currentFigure;
-            if (isFigureVisible(hideLeftFig))
+            if (IsFigureVisible(hideLeftFig))
             {
                 currentFigure = hideLeftFig;
                 hideLeftFig = figure;
@@ -110,16 +124,16 @@ namespace Tetris.Logic
                 currentFigure = hidenRightFig;
                 hidenRightFig = figure;
             }
-            createHidenFigures();
+            CreateHidenFigures();
         }
 
-        public override void startGame()
+        public override void StartGame()
         {
-            base.startGame();
-            createHidenFigures();
+            base.StartGame();
+            CreateHidenFigures();
         }
 
-        protected bool isFigureVisible(Transform figure)
+        protected bool IsFigureVisible(Transform figure)
         {
             foreach (Transform block in figure)
             {
@@ -129,7 +143,7 @@ namespace Tetris.Logic
             return false;
         }
 
-        protected override void checkLine()
+        protected override void CheckLine()
         {
             var collectedLineFound = 0;
             var isCollectedLine = true;
@@ -146,7 +160,7 @@ namespace Tetris.Logic
                 if (isCollectedLine) collectedLineFound++;
                 if (collectedLineFound == 2)
                 {
-                    addScore(2);
+                    AddScore(2);
                     field.removeLine(y - 1);
                     field.removeLine(y - 1);
                     y -= 2;
@@ -154,7 +168,7 @@ namespace Tetris.Logic
             }
         }
 
-        protected override bool isValidBlockPosition(Transform block, Vector3 moveVector)
+        protected override bool IsValidBlockPosition(Transform block, Vector3 moveVector)
         {
             var newPosition = block.position + moveVector - transform.position;
             if (newPosition.x < 0)

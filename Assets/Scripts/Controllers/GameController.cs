@@ -14,8 +14,8 @@ namespace Tetris.Controllers
         public void Awake()
         {
             var gameLogic = GetComponent<GameLogic>();
-            moveBlock = gameLogic.moveCurentFigure;
-            rotateBlock = gameLogic.rotateCurrentFigure;
+            moveBlock = gameLogic.MoveCurentFigure;
+            rotateBlock = gameLogic.RotateCurrentFigure;
         }
 
         public virtual void readPlayerInput()
