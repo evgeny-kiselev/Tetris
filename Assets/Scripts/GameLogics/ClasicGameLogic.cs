@@ -6,6 +6,7 @@ namespace Tetris.Logic
     [RequireComponent(typeof(FigureFactory))]
     public class ClasicGameLogic : GameLogic
     {
+        ///See <see cref="GameLogic.Iteration"/>
         public override void Iteration()
         {
             if (!MoveCurentFigure(new Vector3(0, -1, 0)))
@@ -19,11 +20,13 @@ namespace Tetris.Logic
             }
         }
 
+        ///See <see cref="GameLogic.StartGame"/>
         public override void StartGame()
         {
             currentFigure = factory.createFigure(field.spawnPoint).transform;
         }
 
+        ///See <see cref="GameLogic.CheckLine"/>
         protected override void CheckLine()
         {
             for (var y = 0; y < field.height; y++)
@@ -40,6 +43,7 @@ namespace Tetris.Logic
             }
         }
 
+        ///See <see cref="GameLogic.IsValidBlockPosition(Transform, Vector3)"/>
         protected override bool IsValidBlockPosition(Transform block, Vector3 moveVector)
         {
             var newPosition = (block.position + moveVector - transform.position).Round();
@@ -51,6 +55,7 @@ namespace Tetris.Logic
             return true;
         }
 
+        ///See <see cref="GameLogic.MoveCurentFigure(Vector3)"/>
         public override bool MoveCurentFigure(Vector3 moveVector)
         {
             if (CanMoveFigure(currentFigure, moveVector))

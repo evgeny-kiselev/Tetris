@@ -6,6 +6,7 @@ namespace Tetris.Logic
     {
         protected Transform hideLeftFig, hidenRightFig;
 
+        ///See <see cref="GameLogic.Iteration"/>
         public override void Iteration()
         {
             if (!MoveCurentFigure(new Vector3(0, -1, 0)))
@@ -55,9 +56,7 @@ namespace Tetris.Logic
             return figure;
         }
 
-        ///<summary>
-        /// <see cref="GameLogic.RotateCurrentFigure"/>
-        ///</summary>
+        ///See <see cref="GameLogic.RotateCurrentFigure"/>
         public override void RotateCurrentFigure()
         {
             base.RotateCurrentFigure();
@@ -99,6 +98,9 @@ namespace Tetris.Logic
             return isMooved;
         }
 
+        /// <summary>
+        /// Обновляет видимость блоков фигуры
+        /// </summary>
         protected void UpdateBlocksVisible(Transform figure)
         {
             var minX = transform.position.x;
@@ -111,6 +113,9 @@ namespace Tetris.Logic
             }
         }
 
+        /// <summary>
+        /// Пересматривает текующую главную фигуру
+        /// </summary>
         protected void RevisionCurrentFigure()
         {
             var figure = currentFigure;
@@ -127,12 +132,18 @@ namespace Tetris.Logic
             CreateHidenFigures();
         }
 
+        ///See <see cref="GameLogic.StartGame"/>
         public override void StartGame()
         {
             base.StartGame();
             CreateHidenFigures();
         }
 
+        /// <summary>
+        /// Проверяет видна ли фигура на поле
+        /// </summary>
+        /// <param name="figure">Проверяемая фигура</param>
+        /// <returns>true если хотя бы один блок виден, иначе false</returns>
         protected bool IsFigureVisible(Transform figure)
         {
             foreach (Transform block in figure)
@@ -143,6 +154,7 @@ namespace Tetris.Logic
             return false;
         }
 
+        /// See <see cref="GameLogic.CheckLine"/>
         protected override void CheckLine()
         {
             var collectedLineFound = 0;
@@ -168,6 +180,7 @@ namespace Tetris.Logic
             }
         }
 
+        /// See <see cref="GameLogic.CheckLine"/>
         protected override bool IsValidBlockPosition(Transform block, Vector3 moveVector)
         {
             var newPosition = block.position + moveVector - transform.position;

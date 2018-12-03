@@ -17,11 +17,24 @@ namespace Tetris
         protected Field field;
         private float deltaTime;
         private float iteratorTime;
-        public bool isGameEnded = false;
+        private bool isGameEnded = false;
         [Range(0.1f, 5f)]
         public float speed = 1;
         public int score;
         public Text scoreText;
+
+        public bool IsGameEnden
+        {
+            get
+            {
+                return isGameEnded;
+            }
+            set
+            {
+                isGameEnded = value;
+                scoreText.text = scoreText.text + "\nИгра окончена";
+            }
+        }
 
         public int Score
         {

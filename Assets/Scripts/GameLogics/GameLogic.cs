@@ -53,7 +53,7 @@ namespace Tetris.Logic
             foreach (Transform block in currentFigure)
                 if (block.position.y >= transform.position.x + field.height)
                 {
-                    game.isGameEnded = true;
+                    game.IsGameEnden = true;
                     return true;
                 }
 

@@ -7,7 +7,6 @@ namespace Tetris.Figures
         private new Transform transform;
         private Vector3 center;
 
-        // Use this for initialization
         void Start()
         {
             transform = GetComponent<Transform>();
@@ -18,6 +17,7 @@ namespace Tetris.Figures
         {
             return center;
         }
+
         private void calculateCenter(out Vector3 center)
         {
             float minX = 0f;

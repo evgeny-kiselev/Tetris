@@ -23,10 +23,13 @@ namespace Tetris.Fields
         public void Awake()
         {
             map = new Transform[width, height];
-            spawnPoint = new Vector3(width / 2, height, 1);
+            spawnPoint = new Vector3(transform.position.x + width / 2, transform.position.y + height, 1);
             createWalls();
         }
 
+        /// <summary>
+        /// Создает стены вокруг игрового поля
+        /// </summary>
         protected virtual void createWalls()
         {
             if (wallBlock == null) return;
@@ -48,6 +51,10 @@ namespace Tetris.Fields
             }
         }
 
+        /// <summary>
+        /// Добавляет блоки фигуры на карту объектов
+        /// </summary>
+        /// <param name="figure"> добавляемая фигура</param>
         public void addFigure(Transform figure)
         {
             foreach (Transform block in figure)
@@ -59,6 +66,10 @@ namespace Tetris.Fields
             }
         }
 
+        /// <summary>
+        /// Удаляет линию блоков с сдвигом вышестоящих
+        /// </summary>
+        /// <param name="y">координата линии</param>
         public void removeLine(int y)
         {
             for (var x = 0; x < width; x++) removeBlock(x, y);
@@ -73,11 +84,19 @@ namespace Tetris.Fields
             }
         }
 
+        /// <summary>
+        /// Возвращает блок с карты
+        /// </summary>
+        /// <param name="position"> позиция блока</param>
+        /// <returns>Transform если блок стоит, иначе null</returns>
         public Transform getCeilObject(Vector3 position)
         {
             return getCeilObject((int)position.x, (int)position.y);
         }
 
+        /// <summary>
+        /// Удаляет блок с карты, если блок последний, так же удаляется объект - родитель
+        /// </summary>
         public void removeBlock(int x, int y)
         {
             var block = map[x, y];
@@ -86,6 +105,9 @@ namespace Tetris.Fields
             map[x, y] = null;
         }
 
+        /// <summary>
+        /// <see cref="getCeilObject(Vector3)"/>
+        /// </summary>
         public Transform getCeilObject(int x, int y)
         {
             if (x >= 0 && x < width)
